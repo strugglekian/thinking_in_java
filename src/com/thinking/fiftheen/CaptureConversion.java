@@ -6,8 +6,7 @@
 
 package com.thinking.fiftheen;
 
-
-import java.lang.reflect.Array;
+import java.util.List;
 
 public class CaptureConversion {
     static <T> void f1(Holder<T> holder) {
@@ -24,6 +23,8 @@ public class CaptureConversion {
         Holder<Integer> holder = new Holder<>(1);
         f1(holder);
         f2(holder);
+        //通过泛型转型
+        List<String> integerList = List.class.cast(new Holder<>(4));
     }
 }
 
