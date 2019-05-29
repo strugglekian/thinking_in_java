@@ -13,24 +13,31 @@ import com.mongodb.MongoSocketReadException;
 import com.mongodb.ServerAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.misc.Launcher;
 
 import java.net.SocketException;
 
 public class ExceptionDemo {
     public static void main(String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         ExceptionDemo exceptionDemo = new ExceptionDemo();
-        Class mongoExceptionClass = null;
-        Class mysqlExceptionClass = null;
-        boolean mongoExceptionFlag = false;
-        boolean mysqlExceptionFlag = false;
+        exceptionDemo.getClzss();
+        Class<?> mongoExceptionClass;
+        Class mysqlExceptionClass;
+        boolean mongoExceptionFlag;
+        boolean mysqlExceptionFlag;
         try {
             getException();
         } catch (Throwable throwable) {
+            System.out.println("throwable:"+throwable.getClass().getClassLoader().toString());
+            ClassLoader classLoader = Launcher.getLauncher().getClassLoader();
             mysqlExceptionClass = Class.forName("java.sql.SQLException");
             mongoExceptionClass = Class.forName("com.mongodb.MongoException");
             mongoExceptionFlag = mongoExceptionClass.isInstance(throwable);
             mysqlExceptionFlag = mysqlExceptionClass.isInstance(throwable);
+//            ClassLoader.getSystemClassLoader().loadClass("");
             System.out.println("mongoExceptionFlag:" + mongoExceptionFlag + ";   mysqlExceptionFlag:" + mysqlExceptionFlag);
+            System.out.println(mongoExceptionClass.getClassLoader().toString());
+
             if (mongoExceptionClass != null && mongoExceptionFlag) {
                 System.out.println("mongoError");
             } else if (mysqlExceptionClass != null && mysqlExceptionFlag) {
@@ -43,16 +50,10 @@ public class ExceptionDemo {
 
     private static void getException() {
         throw new MongoException("sdf");
-//        throw new MongoSocketReadException("mogno", null, null);
     }
 
-    private Class getClzss(String className) {
+    private void getClzss( ) {
         ClassLoader classLoader = this.getClass().getClassLoader();
-        try {
-            return classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+        System.out.println(classLoader.toString());
     }
 }
